@@ -15,9 +15,9 @@ function App() {
       </head>
       {/* <header className="App-header"> */}
       <div>
-        <nav class="navbar">
-          <div class="logo">Week4</div>
-          <ul class="nav-links">
+        <nav className="navbar">
+          <div className="logo">Week4</div>
+          <ul className="nav-links">
             <li><Link to="/" className="nav-item">Home</Link></li>
             <li><Link to="/content" className="nav-item">Content</Link></li>
             <li><Link to="/register" className="nav-item">Register</Link></li>
