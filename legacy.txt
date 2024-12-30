@@ -1,0 +1,206 @@
+            <div>
+                {Object.keys(loginResponse).length > 0 ? 
+                    <div> 
+                        Response username: {loginResponse.username}
+                        <br/>
+                        Response accessToken: {loginResponse.accessToken}
+                        <br/>
+                        Response refreshToken: {loginResponse.refreshToken}                               
+                    </div>
+                    :
+                    <div> Null Login Response </div>
+                }
+            </div>
+
+            <div>
+                Is Authenticated: {isAuthenticated}
+            </div>
+
+            <div>
+                {username === undefined || username === null ? <p> username: Empty</p> : <p>username: {username}</p>  } 
+                <br/>
+                {password === undefined || password === null ? <p> password: Empty</p> : <p>password: {password}</p>  } 
+                {/* password: {password} */}
+            </div>
+----------------------------------------------------------------
+
+
+function Login() {
+    const [username, setUsername] = useState(""); 
+    const [password, setPassword] = useState(""); 
+
+    const [loginResponse, setLoginResponse] = useState({
+        username: "",
+        accessToken: "",
+        refreshToken: "",
+    });
+    const [isAuthenticated, setIsAuthenticated] = useState('false');
+
+    const clearForm = () => { 
+        setUserName(""); 
+        setPassword(""); 
+      }; 
+
+    const handleSubmit = (e) => { 
+        e.preventDefault(); 
+        alert("Logged in!"); 
+        fetchData();
+        clearForm(); 
+      }; 
+
+    const fetchData = () => {
+        setIsAuthenticated('true');
+
+        fetch('https://dummyjson.com/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              
+              username: username,
+              password: password,
+              expiresInMins: 30, // optional, defaults to 60
+            }),
+            credentials: 'include' // Include cookies (e.g., accessToken) in the request
+          })
+          .then(res => res.json())
+          .then((data) => console.log(data))
+        .then((data) => setLoginResponse({
+            username : data.username,
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken
+        }));
+
+        // console.log(loginResponse);
+    }
+
+    React.useEffect(() => {
+        fetchData();
+      }, []);
+
+    return  (
+        <div>
+            <div>
+                Response username: {loginResponse.username}
+                <br/>
+                Response accessToken: {loginResponse.accessToken}
+                <br/>
+                Response refreshToken: {loginResponse.refreshToken}
+            </div>
+
+            <div>
+                Is Authenticated: {isAuthenticated}
+            </div>
+
+            <form onSubmit={handleSubmit}> 
+                <fieldset> 
+                    <h2>Sign Up</h2> 
+                    <div className="Field"> 
+                    <label> 
+                        User name <sup>*</sup> 
+                    </label> 
+                    <input 
+                        value={userName} 
+                        onChange={(e) => { 
+                            setUserName(e.target.value); 
+                        }} 
+                        placeholder="User name" 
+                    /> 
+                    </div> 
+                    
+                    <div className="Field"> 
+                    <label> 
+                        Password <sup>*</sup> 
+                    </label> 
+                    <input 
+                        value={password.value} 
+                        type="password" 
+                        onChange={(e) => { 
+                        setPassword({ ...password, value: e.target.value }); 
+                        }} 
+                        placeholder="Password" 
+                    /> 
+                    </div> 
+
+                    <button type="submit"> 
+                        Login
+                    </button> 
+                </fieldset> 
+            </form> 
+        </div>
+    )
+}
+export default Login;
+
+
+
+----------------------------------------------------------------------
+const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('https://dummyjson.com/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+          expiresInMins: 30
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+
+      const data = await response.json();
+      setMessage(`Login successful! Welcome ${data.username}`);
+      console.log('Login response:', data);
+    } catch (error) {
+      setMessage('Login failed. Please check your username and password.');
+      console.error('Error:', error);
+    }
+  };
+
+  return (
+    <div style={{ maxWidth: '400px', margin: '0 auto', textAlign: 'center' }}>
+      <h2>Login</h2>
+      <form onSubmit={handleLogin}>
+        <div style={{ marginBottom: '1em' }}>
+          <label htmlFor="username" style={{ display: 'block' }}>Username:</label>
+          <input
+            type="text"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+            style={{ width: '100%', padding: '0.5em' }}
+          />
+        </div>
+        <div style={{ marginBottom: '1em' }}>
+          <label htmlFor="password" style={{ display: 'block' }}>Password:</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            style={{ width: '100%', padding: '0.5em' }}
+          />
+        </div>
+        <button type="submit" style={{ padding: '0.5em 1em', cursor: 'pointer' }}>
+          Login
+        </button>
+      </form>
+      {message && <p style={{ marginTop: '1em' }}>{message}</p>}
+    </div>
+  );
+};
+
+export default Login;

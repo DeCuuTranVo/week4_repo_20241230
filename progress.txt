@@ -1,0 +1,6 @@
+Step 1: Init project (done)
+Step 2: Navbar and routing (done)
+Step 3: Create Form
+Step 4: Fetch data from dummy.json
+Step 5: Login and get JWT
+Step 6: Change UI by JWT content
